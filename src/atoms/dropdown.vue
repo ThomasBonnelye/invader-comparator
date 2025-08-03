@@ -1,28 +1,35 @@
 <script setup>
-import { ref, watch } from 'vue'
-
 const props = defineProps({
-  options: {
-    type: Array,
-    required: true
+  options: Array,
+  modelValue: [String, Array],
+  multiple: {
+    type: Boolean,
+    default: false
   },
-  modelValue: {
-    type: Array,
-    required: true
+  disabled: {
+    type: Boolean,
+    default: false
   }
 })
 
 const emit = defineEmits(['update:modelValue'])
 
-const selected = ref([...props.modelValue])
+function onInput(event) {
+  const selected = props.multiple
+    ? Array.from(event.target.selectedOptions).map(o => o.value)
+    : event.target.value
 
-watch(selected, (newVal) => {
-  emit('update:modelValue', newVal)
-})
+  emit('update:modelValue', selected)
+}
 </script>
 
 <template>
-  <select multiple v-model="selected">
+  <select
+    :multiple="multiple"
+    :value="modelValue"
+    :disabled="disabled"
+    @change="onInput"
+  >
     <option 
       v-for="option in options" 
       :key="option.value" 

@@ -35,17 +35,20 @@ function onSearchChange(value) {
 <template>
   <div>
     <Dropdown 
-      :options="firstOptions" 
-      :modelValue="selectedFirst" 
-      @update:modelValue="onFirstChange" 
-    />
+  :options="firstOptions"
+  :modelValue="selectedFirst"
+  @update:modelValue="onFirstChange"
+  :multiple="false"
+/>
 
-    <Dropdown 
-      :options="secondOptions.filter(opt => opt.value !== selectedFirst)" 
-      :modelValue="selectedSeconds" 
-      @update:modelValue="onSecondChange"
-      :disabled="!selectedFirst"
-    />
+<Dropdown 
+  :options="secondOptions.filter(opt => opt.value !== selectedFirst)" 
+  :modelValue="selectedSeconds"
+  @update:modelValue="onSecondChange"
+  :multiple="true"
+  :disabled="!selectedFirst"
+/>
+
 
     <SearchBar 
       :modelValue="search" 

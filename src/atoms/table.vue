@@ -23,21 +23,27 @@ const props = defineProps({
 const filteredData = computed(() => {
   if (!props.firstFilter || props.secondFilters.length === 0) return []
 
-  return props.secondFilters.map(second => {
+  return props.secondFilters.map(tag => {
+    const rows = props.data.filter(row =>
+      row.category === props.firstFilter &&
+      row.tag === tag &&
+      row.value.toLowerCase().includes(props.search.toLowerCase())
+    )
     return {
-      tag: second,
-      rows: props.data.filter(row => 
-        row.category === props.firstFilter &&
-        row.tag === second &&
-        row.value.toLowerCase().includes(props.search.toLowerCase())
-      )
+      tag,
+      rows
     }
   })
 })
+
+// Détermine le nombre max de lignes pour la table
+const maxRowCount = computed(() =>
+  Math.max(...filteredData.value.map(col => col.rows.length), 0)
+)
 </script>
 
 <template>
-  <table v-if="filteredData.length">
+  <table v-if="filteredData.length && maxRowCount > 0">
     <thead>
       <tr>
         <th v-for="col in filteredData" :key="col.tag">
@@ -46,11 +52,13 @@ const filteredData = computed(() => {
       </tr>
     </thead>
     <tbody>
-      <tr v-for="rowIndex in Math.max(...filteredData.map(col => col.rows.length))" :key="rowIndex">
-        <td v-for="col in filteredData" :key="col.tag + '-' + rowIndex">
-          {{ col.rows[rowIndex - 1]?.value || '' }}
+      <tr v-for="i in maxRowCount" :key="i">
+        <td v-for="col in filteredData" :key="col.tag + '-' + i">
+          {{ col.rows[i - 1]?.value || '' }}
         </td>
       </tr>
     </tbody>
   </table>
+
+  <p v-else>Aucune donnée à afficher.</p>
 </template>
