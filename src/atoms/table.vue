@@ -4,9 +4,9 @@ import { fetchPlayerData, type PlayerData } from '@/api/spaceInvaders'
 import { compareInvaders } from '@/api/compareInvaders'
 
 const props = defineProps<{
-  firstFilter: string
-  secondFilters: string[]
-  search: string
+  firstFilter?: string
+  secondFilters?: string[]
+  search?: string
 }>()
 
 // cache par UID
@@ -43,12 +43,12 @@ watch(
 
     loading.value = true
     try {
-      await ensurePlayer(first)
+      await ensurePlayer(String(first))
       for (const uid of seconds) {
         await ensurePlayer(uid)
       }
 
-      const refData = cache.value[first]
+      const refData = cache.value[String(first)]
       if (!refData) {
         throw new Error('Impossible de récupérer les données du joueur principal')
       }
