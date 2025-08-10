@@ -1,60 +1,52 @@
-<script setup>
-import SearchBar from '@/atoms/searchbar.vue'
-import Dropdown from '@/atoms/dropdown.vue'
+<script setup lang="ts">
+import Dropdown from '../atoms/dropdown.vue'
+import SearchBar from '../atoms/searchbar.vue'
 
-const props = defineProps({
-  firstOptions: {
-    type: Array,
-    required: true
-  },
-  secondOptions: {
-    type: Array,
-    required: true
-  },
-  selectedFirst: String,
-  selectedSeconds: Array,
-  search: String
-})
+const props = defineProps<{
+  firstOptions: { label: string; value: string }[]
+  secondOptions: { label: string; value: string }[]
+  selectedFirst: string
+  selectedSeconds: string[]
+  search: string
+}>()
 
 const emit = defineEmits(['update:first', 'update:seconds', 'update:search'])
 
-function onFirstChange(value) {
+function onFirstChange(value: string) {
   emit('update:first', value)
   emit('update:seconds', []) // reset second selection
 }
 
-function onSecondChange(values) {
+function onSecondChange(values: string[]) {
   emit('update:seconds', values)
 }
 
-function onSearchChange(value) {
+function onSearchChange(value: string) {
   emit('update:search', value)
 }
 </script>
 
 <template>
   <div>
-    <Dropdown 
-  :options="firstOptions"
-  :modelValue="selectedFirst"
-  @update:modelValue="onFirstChange"
-  :multiple="false"
-/>
+    <Dropdown
+      :options="firstOptions"
+      :modelValue="selectedFirst"
+      @update:modelValue="onFirstChange"
+      :multiple="false"
+    />
 
-<Dropdown 
-  :options="secondOptions.filter(opt => opt.value !== selectedFirst)" 
-  :modelValue="selectedSeconds"
-  @update:modelValue="onSecondChange"
-  :multiple="true"
-  :disabled="!selectedFirst"
-/>
+    <Dropdown
+      :options="secondOptions"
+      :modelValue="selectedSeconds"
+      @update:modelValue="onSecondChange"
+      :multiple="true"
+      :disabled="!selectedFirst"
+    />
 
-
-    <SearchBar 
-      :modelValue="search" 
-      @update:modelValue="onSearchChange" 
+    <SearchBar
+      :modelValue="search"
+      @update:modelValue="onSearchChange"
       placeholder="Recherche..."
     />
-    
   </div>
 </template>

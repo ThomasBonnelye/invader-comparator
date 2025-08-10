@@ -1,50 +1,67 @@
-<script setup>
-import { ref } from 'vue'
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
 import Filters from '@/molecules/filters.vue'
 import Table from '@/atoms/table.vue'
+import { players } from '@/api/players'
+import { fetchPlayerData, type PlayerData } from '@/api/spaceInvaders'
 
-// This is a mock data structure for demonstration purposes
-const allData = ref([
-  { id: 1, category: 'A', tag: 'X', value: 'Alpha' },
-  { id: 2, category: 'A', tag: 'Y', value: 'Beta' },
-  { id: 3, category: 'A', tag: 'Y', value: 'Bingo' },
-  { id: 4, category: 'A', tag: 'Z', value: 'Zebra' },
-  { id: 5, category: 'A', tag: 'Z', value: 'Zoom' },
-  { id: 6, category: 'B', tag: 'Y', value: 'Gamma' }
-])
+const uids = players.map(p => p.value)
 
-const firstOptions = [
-  { label: 'Cat A', value: 'A' },
-  { label: 'Cat B', value: 'B' }
-]
+// map uid => PlayerData (nom + invaders)
+const playersMap = ref<Record<string, PlayerData>>({})
 
-const secondOptions = [
-  { label: 'Tag X', value: 'X' },
-  { label: 'Tag Y', value: 'Y' },
-  { label: 'Tag Z', value: 'Z' }
-]
+onMounted(async () => {
+  for (const uid of uids) {
+    try {
+      const data = await fetchPlayerData(uid)
+      playersMap.value[uid] = data
+    } catch (e) {
+      console.error('fetch player onMounted', e)
+      playersMap.value[uid] = { player: uid, invaders: [] }
+    }
+  }
+})
+
+const firstOptions = computed(() =>
+  uids.map(uid => ({
+    label: playersMap.value[uid]?.player || uid,
+    value: uid
+  }))
+)
 
 const selectedFirst = ref('')
-const selectedSeconds = ref([])
+const selectedSeconds = ref<string[]>([])
 const search = ref('')
+
+const secondOptions = computed(() =>
+  uids
+    .filter(uid => uid !== selectedFirst.value)
+    .map(uid => ({
+      label: playersMap.value[uid]?.player || uid,
+      value: uid
+    }))
+)
 </script>
 
 <template>
-  <Filters
-    :firstOptions="firstOptions"
-    :secondOptions="secondOptions"
-    :selectedFirst="selectedFirst"
-    :selectedSeconds="selectedSeconds"
-    :search="search"
-    @update:first="selectedFirst = $event"
-    @update:seconds="selectedSeconds = $event"
-    @update:search="search = $event"
-  />
+  <div>
+    <h1>Comparatif Invaders</h1>
 
-  <Table
-    :firstFilter="selectedFirst"
-    :secondFilters="selectedSeconds"
-    :search="search"
-    :data="allData"
-  />
+    <Filters
+      :firstOptions="firstOptions"
+      :secondOptions="secondOptions"
+      :selectedFirst="selectedFirst"
+      :selectedSeconds="selectedSeconds"
+      :search="search"
+      @update:first="selectedFirst = $event"
+      @update:seconds="selectedSeconds = $event"
+      @update:search="search = $event"
+    />
+
+    <Table
+      :firstFilter="selectedFirst"
+      :secondFilters="selectedSeconds"
+      :search="search"
+    />
+  </div>
 </template>
