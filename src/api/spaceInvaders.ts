@@ -3,6 +3,10 @@ export interface PlayerData {
   invaders: string[]
 }
 
+interface InvaderData {
+  name?: string
+}
+
 export async function fetchPlayerData(uid: string): Promise<PlayerData> {
   const BASE_URL = 'https://api.space-invaders.com/flashinvaders_v3_pas_trop_predictif/api/gallery?uid='
 
@@ -11,8 +15,8 @@ export async function fetchPlayerData(uid: string): Promise<PlayerData> {
     const data = await response.json()
 
     const player = data?.player?.name || uid
-    const invadersRaw = Object.values(data?.invaders || {})
-    const invaderNames = [...new Set(invadersRaw.map((inv: any) => (inv?.name ?? '').toString().trim()))]
+    const invadersRaw = Object.values(data?.invaders || {}) as InvaderData[]
+    const invaderNames = [...new Set(invadersRaw.map((inv) => (inv?.name ?? '').toString().trim()))]
 
     return {
       player,

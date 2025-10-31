@@ -63,9 +63,9 @@ watch(
 
       columnHeaders.value = Object.keys(others)
       rows.value = compareInvaders(refData.invaders || [], others)
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error(e)
-      error.value = e?.message || 'Erreur'
+      error.value = e instanceof Error ? e.message : 'Erreur'
       rows.value = {}
       columnHeaders.value = []
     } finally {
