@@ -2,7 +2,7 @@
 import Dropdown from '../atoms/dropdown.vue'
 import SearchBar from '../atoms/searchbar.vue'
 
-const props = defineProps<{
+defineProps<{
   firstOptions: { label: string; value: string }[]
   secondOptions: { label: string; value: string }[]
   selectedFirst: string
