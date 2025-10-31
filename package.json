@@ -1,44 +1,39 @@
 {
   "name": "invader-comparator",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
-  "type": "module",
+  "description": "Application web pour comparer les collections Space Invaders entre joueurs",
+  "scripts": {
+    "install:all": "npm install --prefix frontend && npm install --prefix backend && npm install --prefix admin",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:admin": "npm run dev --prefix admin",
+    "build:frontend": "npm run build --prefix frontend",
+    "build:backend": "npm run build --prefix backend",
+    "build:admin": "npm run build --prefix admin",
+    "build:all": "npm run build:frontend && npm run build:backend && npm run build:admin",
+    "docker:up": "docker-compose --env-file .env up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "docker:build": "docker-compose build",
+    "docker:restart": "docker-compose down && docker-compose --env-file .env up -d",
+    "docker:clean": "docker-compose down -v"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:ThomasBonnelye/invader-comparator.git"
+  },
+  "keywords": [
+    "space-invaders",
+    "vue",
+    "typescript",
+    "nodejs",
+    "mongodb",
+    "docker"
+  ],
+  "author": "Thomas Bonnelye",
+  "license": "MIT",
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
-  },
-  "scripts": {
-    "dev": "vite",
-    "build": "run-p type-check \"build-only {@}\" --",
-    "preview": "vite preview",
-    "test:unit": "vitest",
-    "build-only": "vite build",
-    "type-check": "vue-tsc --build",
-    "lint": "eslint . --fix",
-    "format": "prettier --write src/"
-  },
-  "dependencies": {
-    "vue": "^3.5.18"
-  },
-  "devDependencies": {
-    "@tsconfig/node22": "^22.0.2",
-    "@types/jsdom": "^21.1.7",
-    "@types/node": "^22.16.5",
-    "@vitejs/plugin-vue": "^6.0.1",
-    "@vitest/eslint-plugin": "^1.3.4",
-    "@vue/eslint-config-prettier": "^10.2.0",
-    "@vue/eslint-config-typescript": "^14.6.0",
-    "@vue/test-utils": "^2.4.6",
-    "@vue/tsconfig": "^0.7.0",
-    "eslint": "^9.31.0",
-    "eslint-plugin-vue": "~10.3.0",
-    "jiti": "^2.4.2",
-    "jsdom": "^26.1.0",
-    "npm-run-all2": "^8.0.4",
-    "prettier": "3.6.2",
-    "typescript": "~5.8.0",
-    "vite": "^7.0.6",
-    "vite-plugin-vue-devtools": "^8.0.0",
-    "vitest": "^3.2.4",
-    "vue-tsc": "^3.0.4"
   }
 }
