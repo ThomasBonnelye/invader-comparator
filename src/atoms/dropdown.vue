@@ -1,6 +1,6 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import Button from '@/atoms/Button.vue'
+import Button from '@/atoms/button.vue'
 
 const props = defineProps({
   options: {
