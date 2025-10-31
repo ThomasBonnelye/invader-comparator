@@ -13,7 +13,6 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Configuration CORS
 app.use(
   cors({
     origin: process.env.FRONTEND_URL || 'http://localhost:3000',
@@ -21,17 +20,15 @@ app.use(
   })
 );
 
-// Middleware pour parser le JSON
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Configuration de la session
 if (!process.env.SESSION_SECRET) {
-  throw new Error('SESSION_SECRET doit être défini dans les variables d\'environnement');
+  throw new Error('SESSION_SECRET environment variable is required');
 }
 
 if (!process.env.MONGODB_URI) {
-  throw new Error('MONGODB_URI doit être défini dans les variables d\'environnement');
+  throw new Error('MONGODB_URI environment variable is required');
 }
 
 app.use(
@@ -43,10 +40,10 @@ app.use(
       mongoUrl: process.env.MONGODB_URI,
     }),
     cookie: {
-      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 jours
+      maxAge: 1000 * 60 * 60 * 24 * 7,
       httpOnly: true,
-      secure: false, // Désactivé pour le développement local
-      sameSite: 'lax', // 'lax' pour le développement local
+      secure: false,
+      sameSite: 'lax',
     },
   })
 );

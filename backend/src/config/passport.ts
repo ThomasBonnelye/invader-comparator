@@ -3,7 +3,7 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { User, IUser } from '../models/User.js';
 
 if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
-  throw new Error('Les variables GOOGLE_CLIENT_ID et GOOGLE_CLIENT_SECRET doivent être définies');
+  throw new Error('GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET environment variables are required');
 }
 
 passport.use(
@@ -15,11 +15,9 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        // Recherche de l'utilisateur existant
         let user = await User.findOne({ googleId: profile.id });
 
         if (!user) {
-          // Création d'un nouvel utilisateur
           user = await User.create({
             googleId: profile.id,
             email: profile.emails?.[0]?.value || '',

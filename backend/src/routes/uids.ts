@@ -3,15 +3,13 @@ import { User, IUser } from '../models/User.js';
 
 const router = Router();
 
-// Middleware pour vérifier l'authentification
 const isAuthenticated = (req: Request, res: Response, next: Function) => {
   if (req.isAuthenticated()) {
     return next();
   }
-  res.status(401).json({ error: 'Non authentifié' });
+  res.status(401).json({ error: 'Unauthorized' });
 };
 
-// Récupérer les UIDs de l'utilisateur connecté
 router.get('/', isAuthenticated, async (req: Request, res: Response) => {
   try {
     const user = req.user as IUser;
@@ -20,18 +18,17 @@ router.get('/', isAuthenticated, async (req: Request, res: Response) => {
       othersUids: user.othersUids,
     });
   } catch (error) {
-    res.status(500).json({ error: 'Erreur lors de la récupération des UIDs' });
+    res.status(500).json({ error: 'Failed to retrieve UIDs' });
   }
 });
 
-// Mettre à jour mon UID
 router.put('/my-uid', isAuthenticated, async (req: Request, res: Response) => {
   try {
     const user = req.user as IUser;
     const { uid } = req.body;
 
     if (!uid || typeof uid !== 'string') {
-      return res.status(400).json({ error: 'UID invalide' });
+      return res.status(400).json({ error: 'Invalid UID' });
     }
 
     user.myUid = uid.trim();
@@ -39,21 +36,19 @@ router.put('/my-uid', isAuthenticated, async (req: Request, res: Response) => {
 
     res.json({ success: true, myUid: user.myUid });
   } catch (error) {
-    res.status(500).json({ error: 'Erreur lors de la mise à jour de l\'UID' });
+    res.status(500).json({ error: 'Failed to update UID' });
   }
 });
 
-// Mettre à jour les UIDs des autres
 router.put('/others-uids', isAuthenticated, async (req: Request, res: Response) => {
   try {
     const user = req.user as IUser;
     const { uids } = req.body;
 
     if (!Array.isArray(uids)) {
-      return res.status(400).json({ error: 'Le format des UIDs est invalide' });
+      return res.status(400).json({ error: 'Invalid UIDs format' });
     }
 
-    // Filtrer et nettoyer les UIDs
     user.othersUids = uids
       .filter((uid) => typeof uid === 'string' && uid.trim() !== '')
       .map((uid) => uid.trim());
@@ -62,22 +57,21 @@ router.put('/others-uids', isAuthenticated, async (req: Request, res: Response) 
 
     res.json({ success: true, othersUids: user.othersUids });
   } catch (error) {
-    res.status(500).json({ error: 'Erreur lors de la mise à jour des UIDs' });
+    res.status(500).json({ error: 'Failed to update UIDs' });
   }
 });
 
-// Ajouter un UID aux autres
 router.post('/others-uids', isAuthenticated, async (req: Request, res: Response) => {
   try {
     const user = req.user as IUser;
     const { uid } = req.body;
 
     if (!uid || typeof uid !== 'string') {
-      return res.status(400).json({ error: 'UID invalide' });
+      return res.status(400).json({ error: 'Invalid UID' });
     }
 
     const cleanUid = uid.trim();
-    
+
     if (!user.othersUids.includes(cleanUid)) {
       user.othersUids.push(cleanUid);
       await user.save();
@@ -85,11 +79,10 @@ router.post('/others-uids', isAuthenticated, async (req: Request, res: Response)
 
     res.json({ success: true, othersUids: user.othersUids });
   } catch (error) {
-    res.status(500).json({ error: 'Erreur lors de l\'ajout de l\'UID' });
+    res.status(500).json({ error: 'Failed to add UID' });
   }
 });
 
-// Supprimer un UID des autres
 router.delete('/others-uids/:uid', isAuthenticated, async (req: Request, res: Response) => {
   try {
     const user = req.user as IUser;
@@ -100,7 +93,7 @@ router.delete('/others-uids/:uid', isAuthenticated, async (req: Request, res: Re
 
     res.json({ success: true, othersUids: user.othersUids });
   } catch (error) {
-    res.status(500).json({ error: 'Erreur lors de la suppression de l\'UID' });
+    res.status(500).json({ error: 'Failed to delete UID' });
   }
 });
 
