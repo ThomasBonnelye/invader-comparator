@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import Dropdown from '../atoms/dropdown.vue'
-import SearchBar from '../atoms/searchbar.vue'
+import BaseDropdown from '../atoms/BaseDropdown.vue'
+import SearchBar from '../atoms/SearchBar.vue'
 
 defineProps<{
   firstOptions: { label: string; value: string }[]
@@ -28,14 +28,14 @@ function onSearchChange(value: string) {
 
 <template>
   <div>
-    <Dropdown
+    <BaseDropdown
       :options="firstOptions"
       :modelValue="selectedFirst"
       @update:modelValue="onFirstChange"
       :multiple="false"
     />
 
-    <Dropdown
+    <BaseDropdown
       :options="secondOptions"
       :modelValue="selectedSeconds"
       @update:modelValue="onSecondChange"

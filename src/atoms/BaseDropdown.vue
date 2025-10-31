@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import Button from '@/atoms/button.vue'
+import BaseButton from '@/atoms/BaseButton.vue'
 
 const props = defineProps({
   options: {
@@ -85,7 +85,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div ref="dropdownRef" style="position: relative;">
-    <Button
+    <BaseButton
       :label="buttonLabel"
       :action="toggleDropdown"
       :disabled="disabled"

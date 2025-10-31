@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import Filters from '@/molecules/filters.vue'
-import Table from '@/atoms/table.vue'
+import FilterPanel from '@/molecules/FilterPanel.vue'
+import DataTable from '@/atoms/DataTable.vue'
 import { players } from '@/api/players'
 import { fetchPlayerData, type PlayerData } from '@/api/spaceInvaders'
 
@@ -47,7 +47,7 @@ const secondOptions = computed(() =>
   <div>
     <h1>Comparatif Invaders</h1>
 
-    <Filters
+    <FilterPanel
       :firstOptions="firstOptions"
       :secondOptions="secondOptions"
       :selectedFirst="selectedFirst"
@@ -58,7 +58,7 @@ const secondOptions = computed(() =>
       @update:search="search = $event"
     />
 
-    <Table
+    <DataTable
       :firstFilter="selectedFirst"
       :secondFilters="selectedSeconds"
       :search="search"
