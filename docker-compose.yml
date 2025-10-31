@@ -1,0 +1,59 @@
+services:
+  # Base de données MongoDB
+  mongo:
+    image: mongo:7
+    container_name: invader-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: invader-comparator
+    networks:
+      - invader-network
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: invader-backend
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - MONGODB_URI=mongodb://mongo:27017/invader-comparator
+      - SESSION_SECRET=${SESSION_SECRET}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - GOOGLE_CALLBACK_URL=${GOOGLE_CALLBACK_URL}
+      - FRONTEND_URL=${FRONTEND_URL}
+    depends_on:
+      - mongo
+    networks:
+      - invader-network
+
+  # Frontend principal (comparateur)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: invader-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    networks:
+      - invader-network
+
+
+
+volumes:
+  mongo_data:
+    driver: local
+
+networks:
+  invader-network:
+    driver: bridge
